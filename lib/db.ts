@@ -1,125 +1,253 @@
-import { Reservation } from './types';
+import { PrismaClient, Prisma } from "@prisma/client";
+import { Reservation } from "./types";
 
-// Mock database for reservations
-// In a real app, this would be replaced with a database connection
-let reservations: Reservation[] = [];
+declare global {
+  var prisma: PrismaClient | undefined;
+}
 
-export const getReservations = () => {
-  return reservations;
-};
+const prisma =
+  global.prisma ||
+  new PrismaClient({
+    log:
+      process.env.NODE_ENV === "development"
+        ? ["query", "error", "warn"]
+        : ["error"],
+  });
 
-export const getReservationById = (id: string) => {
-  return reservations.find((reservation) => reservation.id === id);
-};
+if (process.env.NODE_ENV !== "production") {
+  global.prisma = prisma;
+}
 
-export const getReservationsByDate = (date: string) => {
-  return reservations.filter((reservation) => reservation.date === date);
-};
+// ===================== Reservation Functions =====================
 
-export const getReservationsByStatus = (status: Reservation['status']) => {
-  return reservations.filter((reservation) => reservation.status === status);
-};
-
-export const createReservation = (reservation: Omit<Reservation, 'id' | 'createdAt' | 'updatedAt' | 'status'>) => {
-  const newReservation: Reservation = {
-    id: Math.random().toString(36).substring(2, 9),
-    ...reservation,
-    status: 'pending',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-  reservations.push(newReservation);
-  return newReservation;
-};
-
-export const updateReservation = (id: string, updates: Partial<Reservation>) => {
-  const index = reservations.findIndex((reservation) => reservation.id === id);
-  if (index !== -1) {
-    reservations[index] = {
-      ...reservations[index],
-      ...updates,
-      updatedAt: new Date().toISOString(),
-    };
-    return reservations[index];
-  }
-  return null;
-};
-
-export const updateReservationStatus = (id: string, status: Reservation['status']) => {
-  return updateReservation(id, { status });
-};
-
-export const deleteReservation = (id: string) => {
-  const index = reservations.findIndex((reservation) => reservation.id === id);
-  if (index !== -1) {
-    const deleted = reservations[index];
-    reservations = reservations.filter((reservation) => reservation.id !== id);
-    return deleted;
-  }
-  return null;
-};
-
-export const isTimeSlotAvailable = (date: string, time: string) => {
-  const existingReservations = reservations.filter(
-    (r) => r.date === date && r.time === time && (r.status === 'confirmed' || r.status === 'pending')
-  );
-  // Assuming a limited number of reservations per time slot
-  // In a real app, this would be more sophisticated based on tables/capacity
-  return existingReservations.length < 3;
-};
-
-// Load some sample data for development purposes
-export const loadSampleData = () => {
-  if (reservations.length === 0) {
-    const today = new Date();
-    const tomorrow = new Date(today);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    
-    const formatDate = (date: Date) => date.toISOString().split('T')[0];
-    
-    reservations = [
-      {
-        id: '1',
-        guestName: 'John Smith',
-        guestEmail: 'john@example.com',
-        guestPhone: '555-123-4567',
-        partySize: 4,
-        date: formatDate(today),
-        time: '19:00',
-        specialRequests: 'Window seat if possible',
-        status: 'confirmed',
-        createdAt: new Date(today.getTime() - 86400000).toISOString(),
-        updatedAt: new Date(today.getTime() - 43200000).toISOString()
+export const isTimeSlotAvailable = async (date: string, time: string) => {
+  const existingReservations = await prisma.reservation.findMany({
+    where: {
+      date,
+      time,
+      status: {
+        in: ["CONFIRMED", "PENDING"],
       },
-      {
-        id: '2',
-        guestName: 'Maria Garcia',
-        guestEmail: 'maria@example.com',
-        guestPhone: '555-987-6543',
-        partySize: 2,
-        date: formatDate(tomorrow),
-        time: '20:00',
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      },
-      {
-        id: '3',
-        guestName: 'Ahmed Hassan',
-        guestEmail: 'ahmed@example.com',
-        guestPhone: '555-456-7890',
-        partySize: 6,
-        date: formatDate(tomorrow),
-        time: '18:30',
-        specialRequests: 'Celebrating a birthday',
-        status: 'pending',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      }
-    ];
-  }
-  return reservations;
+    },
+  });
+
+  // Limite hardcodeado: 3 reservas por slot (ajustable si quieres en el futuro)
+  return existingReservations.length < 1;
 };
 
-// Initialize sample data
-loadSampleData();
+export async function getReservations() {
+  try {
+    return await prisma.reservation.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+  } catch (error) {
+    console.error("Error fetching reservations:", error);
+    throw new Error("Failed to fetch reservations");
+  }
+}
+
+export async function getReservationById(id: string) {
+  try {
+    return await prisma.reservation.findUnique({
+      where: { id },
+    });
+  } catch (error) {
+    console.error(`Error fetching reservation ${id}:`, error);
+    throw new Error("Failed to fetch reservation");
+  }
+}
+
+export async function getReservationsByDate(date: string) {
+  try {
+    const searchDate = new Date(date);
+    return await prisma.reservation.findMany({
+      where: { date: searchDate },
+      orderBy: { time: "asc" },
+    });
+  } catch (error) {
+    console.error(`Error fetching reservations for date ${date}:`, error);
+    throw new Error("Failed to fetch reservations by date");
+  }
+}
+
+export async function getReservationsByStatus(status: Reservation["status"]) {
+  try {
+    return await prisma.reservation.findMany({
+      where: { status },
+      orderBy: [{ date: "asc" }, { time: "asc" }],
+    });
+  } catch (error) {
+    console.error(`Error fetching reservations with status ${status}:`, error);
+    throw new Error("Failed to fetch reservations by status");
+  }
+}
+
+export async function createReservation(
+  data: Omit<Reservation, "id" | "createdAt" | "updatedAt" | "status">
+) {
+  try {
+    return await prisma.reservation.create({
+      data: {
+        ...data,
+        date: new Date(data.date),
+        status: "PENDING",
+      },
+    });
+  } catch (error) {
+    console.error("Error creating reservation:", error);
+    throw new Error("Failed to create reservation");
+  }
+}
+
+export async function updateReservation(
+  id: string,
+  updates: Partial<Reservation>
+) {
+  try {
+    return await prisma.reservation.update({
+      where: { id },
+      data: {
+        ...updates,
+        updatedAt: new Date(),
+      },
+    });
+  } catch (error) {
+    console.error(`Error updating reservation ${id}:`, error);
+    throw new Error("Failed to update reservation");
+  }
+}
+
+export async function updateReservationStatus(
+  id: string,
+  status: Reservation["status"]
+) {
+  try {
+    return await prisma.reservation.update({
+      where: { id },
+      data: {
+        status,
+        updatedAt: new Date(),
+      },
+    });
+  } catch (error) {
+    console.error(`Error updating reservation status ${id}:`, error);
+    throw new Error("Failed to update reservation status");
+  }
+}
+
+export async function deleteReservation(id: string) {
+  try {
+    return await prisma.reservation.delete({
+      where: { id },
+    });
+  } catch (error) {
+    console.error(`Error deleting reservation ${id}:`, error);
+    throw new Error("Failed to delete reservation");
+  }
+}
+
+// ===================== Time Slot Functions =====================
+
+export async function getTimeSlotAvailability(
+  date: string,
+  time: string
+): Promise<boolean> {
+  try {
+    const searchDate = new Date(date);
+    const reservationCount = await prisma.reservation.count({
+      where: {
+        date: { equals: searchDate },
+        time: { equals: time },
+        status: { in: ["PENDING", "CONFIRMED"] },
+      },
+    });
+
+    const timeSlot = await prisma.timeSlot.findUnique({
+      where: {
+        date_time: {
+          date: searchDate,
+          time: time,
+        },
+      },
+    });
+
+    return reservationCount < 1 && (!timeSlot || timeSlot.available);
+  } catch (error) {
+    console.error(
+      `Error checking time slot availability for ${date} ${time}:`,
+      error
+    );
+    throw new Error("Failed to check time slot availability");
+  }
+}
+
+export async function updateTimeSlotAvailability(
+  date: string,
+  time: string,
+  available: boolean
+) {
+  try {
+    const searchDate = new Date(date);
+    return await prisma.timeSlot.upsert({
+      where: {
+        date_time: {
+          date: searchDate,
+          time: time,
+        },
+      },
+      update: {
+        available,
+        updatedAt: new Date(),
+      },
+      create: {
+        date: searchDate,
+        time: time,
+        available,
+      },
+    });
+  } catch (error) {
+    console.error(
+      `Error updating time slot availability for ${date} ${time}:`,
+      error
+    );
+    throw new Error("Failed to update time slot availability");
+  }
+}
+
+// ===================== User Functions =====================
+
+export async function getUserByEmail(email: string) {
+  try {
+    return await prisma.user.findUnique({
+      where: { email },
+    });
+  } catch (error) {
+    console.error(`Error fetching user with email ${email}:`, error);
+    throw new Error("Failed to fetch user");
+  }
+}
+
+export async function createUser(data: {
+  name: string;
+  email: string;
+  password?: string;
+  role?: "GUEST" | "ADMIN";
+}) {
+  try {
+    return await prisma.user.create({
+      data: {
+        ...data,
+        role: data.role || "GUEST",
+      },
+    });
+  } catch (error: any) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      throw new Error("A user with this email already exists");
+    }
+    console.error("Error creating user:", error);
+    throw new Error("Failed to create user");
+  }
+}

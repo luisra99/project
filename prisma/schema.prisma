@@ -1,0 +1,62 @@
+generator client {
+    provider = "prisma-client-js"
+     seed     = "ts-node src/seed.ts"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id        String   @id @default(uuid())
+    name      String
+    email     String   @unique
+    password  String?
+    role      Role     @default(GUEST)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model Reservation {
+    id              String            @id @default(uuid())
+    guestName       String
+    guestEmail      String
+    guestPhone      String
+    partySize       Int
+    date            DateTime
+    time            String
+    specialRequests String?
+    status          ReservationStatus @default(PENDING)
+    createdAt       DateTime          @default(now())
+    updatedAt       DateTime          @updatedAt
+
+    @@index([date, time])
+    @@index([status])
+    @@index([guestEmail])
+}
+
+model TimeSlot {
+    id        String   @id @default(uuid())
+    date      DateTime
+    time      String
+    available Boolean  @default(true)
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([date, time])
+    @@index([date])
+    @@index([available])
+}
+
+enum Role {
+    GUEST
+    ADMIN
+}
+
+enum ReservationStatus {
+    PENDING
+    CONFIRMED
+    REJECTED
+    CANCELLED
+}

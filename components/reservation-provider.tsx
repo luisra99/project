@@ -2,25 +2,40 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { Reservation } from "@/lib/types";
-import { getReservations, createReservation, updateReservationStatus } from "@/lib/db";
+import {
+  createReservation,
+  getReservations,
+  updateReservationStatus,
+} from "@/services/reservationService";
 
 interface ReservationContextType {
   reservations: Reservation[];
   loading: boolean;
-  addReservation: (data: Omit<Reservation, 'id' | 'createdAt' | 'updatedAt' | 'status'>) => Promise<Reservation>;
-  updateStatus: (id: string, status: Reservation['status']) => Promise<Reservation | null>;
+  addReservation: (
+    data: Omit<Reservation, "id" | "createdAt" | "updatedAt" | "status">
+  ) => Promise<Reservation>;
+  updateStatus: (
+    id: string,
+    status: Reservation["status"]
+  ) => Promise<Reservation | null>;
   refreshReservations: () => void;
 }
 
-const ReservationContext = createContext<ReservationContextType | undefined>(undefined);
+const ReservationContext = createContext<ReservationContextType | undefined>(
+  undefined
+);
 
-export function ReservationProvider({ children }: { children: React.ReactNode }) {
+export function ReservationProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [reservations, setReservations] = useState<Reservation[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const refreshReservations = () => {
+  const refreshReservations = async () => {
     // In a real app, this would fetch from an API
-    const data = getReservations();
+    const data: any = await getReservations();
     setReservations(data);
     setLoading(false);
   };
@@ -29,18 +44,18 @@ export function ReservationProvider({ children }: { children: React.ReactNode })
     refreshReservations();
   }, []);
 
-  const addReservation = async (data: Omit<Reservation, 'id' | 'createdAt' | 'updatedAt' | 'status'>) => {
+  const addReservation = async (data: any) => {
     // In a real app, this would be an API call
-    const newReservation = createReservation(data);
+    const newReservation: any = await createReservation(data);
     setReservations([...reservations, newReservation]);
     return newReservation;
   };
 
-  const updateStatus = async (id: string, status: Reservation['status']) => {
+  const updateStatus = async (id: string, status: Reservation["status"]) => {
     // In a real app, this would be an API call
-    const updated = updateReservationStatus(id, status);
+    const updated: any = await updateReservationStatus(id, status);
     if (updated) {
-      setReservations(reservations.map(r => r.id === id ? updated : r));
+      setReservations(reservations.map((r) => (r.id === id ? updated : r)));
     }
     return updated;
   };
@@ -53,13 +68,19 @@ export function ReservationProvider({ children }: { children: React.ReactNode })
     refreshReservations,
   };
 
-  return <ReservationContext.Provider value={value}>{children}</ReservationContext.Provider>;
+  return (
+    <ReservationContext.Provider value={value}>
+      {children}
+    </ReservationContext.Provider>
+  );
 }
 
 export const useReservations = () => {
   const context = useContext(ReservationContext);
   if (context === undefined) {
-    throw new Error("useReservations must be used within a ReservationProvider");
+    throw new Error(
+      "useReservations must be used within a ReservationProvider"
+    );
   }
   return context;
 };

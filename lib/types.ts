@@ -1,5 +1,5 @@
 // Types for the reservation system
-export type UserRole = 'guest' | 'admin';
+export type UserRole = "guest" | "admin";
 
 export interface User {
   id: string;
@@ -17,7 +17,7 @@ export interface Reservation {
   date: string;
   time: string;
   specialRequests?: string;
-  status: 'pending' | 'confirmed' | 'rejected' | 'cancelled';
+  status: "PENDING" | "CONFIRMED" | "REJECTED" | "CANCELLED";
   createdAt: string;
   updatedAt: string;
 }

@@ -31,8 +31,11 @@ export default function CalendarView({
 
   useEffect(() => {
     if (selectedDate) {
-      const availability = getAvailabilityForDate(selectedDate);
-      setDateAvailability(availability);
+      const availability = getAvailabilityForDate(selectedDate).then(
+        (response) => {
+          setDateAvailability(response);
+        }
+      );
     } else {
       setDateAvailability(null);
     }
@@ -46,7 +49,7 @@ export default function CalendarView({
           Select a Date
         </h3>
         <ScrollArea className="w-full whitespace-nowrap rounded-md border">
-          <div className="flex p-4 gap-2 overflow">
+          <div className="flex p-4 gap-2" style={{ justifyContent: "center" }}>
             {availableDates.map((date) => {
               const formattedDate = new Date(date).toLocaleDateString("en-US", {
                 weekday: "short",
@@ -82,6 +85,7 @@ export default function CalendarView({
           </h3>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 mt-2">
             {dateAvailability.timeSlots.map((slot) => {
+              console.log(slot);
               const isSelected = selectedTime === slot.time;
               const displayTime = formatDisplayTime(slot.time);
 

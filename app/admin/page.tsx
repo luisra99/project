@@ -151,24 +151,24 @@ export default function AdminPage() {
         </Card>
       </div>
 
-      <Tabs defaultValue="pending" className="w-full">
+      <Tabs defaultValue="PENDING" className="w-full">
         <TabsList className="mb-6">
-          <TabsTrigger value="pending">Pending</TabsTrigger>
-          <TabsTrigger value="confirmed">Confirmed</TabsTrigger>
-          <TabsTrigger value="rejected">Rejected</TabsTrigger>
+          <TabsTrigger value="PENDING">Pending</TabsTrigger>
+          <TabsTrigger value="CONFIRMED">Confirmed</TabsTrigger>
+          <TabsTrigger value="REJECTED">Rejected</TabsTrigger>
           <TabsTrigger value="all">All Reservations</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="pending">
-          <AdminReservationList status="pending" />
+        <TabsContent value="PENDING">
+          <AdminReservationList status="PENDING" />
         </TabsContent>
 
-        <TabsContent value="confirmed">
-          <AdminReservationList status="confirmed" />
+        <TabsContent value="CONFIRMED">
+          <AdminReservationList status="CONFIRMED" />
         </TabsContent>
 
-        <TabsContent value="rejected">
-          <AdminReservationList status="rejected" />
+        <TabsContent value="REJECTED">
+          <AdminReservationList status="REJECTED" />
         </TabsContent>
 
         <TabsContent value="all">
