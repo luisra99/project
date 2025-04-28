@@ -53,13 +53,13 @@ export default function AdminReservationList({
   const [processing, setProcessing] = useState<string | null>(null);
   const { toast } = useToast();
 
-  // Filter reservations based on status
+  // Filtrar reservas según estado
   const filteredReservations =
     status === "all"
       ? reservations
       : reservations.filter((r) => r.status === status);
 
-  // Handle status update
+  // Manejar actualización de estado
   const handleStatusUpdate = async (
     id: string,
     newStatus: Reservation["status"]
@@ -71,15 +71,15 @@ export default function AdminReservationList({
 
       if (updated) {
         toast({
-          title: "Status updated",
-          description: `Reservation ${id} is now ${newStatus}`,
+          title: "Estado actualizado",
+          description: `La reserva ${id} ahora está ${newStatus.toLowerCase()}`,
         });
       }
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Update failed",
-        description: "There was an error updating the reservation status",
+        title: "Error al actualizar",
+        description: "Hubo un error al actualizar el estado de la reserva",
       });
     } finally {
       setProcessing(null);
@@ -98,11 +98,11 @@ export default function AdminReservationList({
     return (
       <div className="text-center py-10">
         <UtensilsCrossed className="h-12 w-12 mx-auto text-muted-foreground mb-3" />
-        <h3 className="text-lg font-medium">No reservations found</h3>
+        <h3 className="text-lg font-medium">No se encontraron reservas</h3>
         <p className="text-muted-foreground">
           {status === "all"
-            ? "There are no reservations in the system yet."
-            : `There are no ${status} reservations.`}
+            ? "Aún no hay reservas en el sistema."
+            : `No hay reservas ${status.toLowerCase()}.`}
         </p>
       </div>
     );
@@ -140,7 +140,7 @@ export default function AdminReservationList({
                 </div>
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4 text-muted-foreground" />
-                  <span>{reservation.partySize} guests</span>
+                  <span>{reservation.partySize} personas</span>
                 </div>
                 <div className="flex items-center gap-2 col-span-2">
                   <User className="h-4 w-4 text-muted-foreground" />
@@ -149,12 +149,14 @@ export default function AdminReservationList({
               </div>
 
               <div className="p-3 bg-muted rounded-md text-sm">
-                <p className="font-medium mb-1">Date</p>
+                <p className="font-medium mb-1">Fecha</p>
                 <p>{formatDisplayDate(reservation.date)}</p>
 
                 {reservation.specialRequests && (
                   <>
-                    <p className="font-medium mt-3 mb-1">Special Requests</p>
+                    <p className="font-medium mt-3 mb-1">
+                      Solicitudes especiales
+                    </p>
                     <p className="text-muted-foreground">
                       {reservation.specialRequests}
                     </p>
@@ -179,7 +181,7 @@ export default function AdminReservationList({
                     ) : (
                       <XCircle className="h-4 w-4 mr-2" />
                     )}
-                    Reject
+                    Rechazar
                   </Button>
                   <Button
                     size="sm"
@@ -194,7 +196,7 @@ export default function AdminReservationList({
                     ) : (
                       <CheckCircle className="h-4 w-4 mr-2" />
                     )}
-                    Confirm
+                    Confirmar
                   </Button>
                 </>
               )}
@@ -203,25 +205,25 @@ export default function AdminReservationList({
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button variant="outline" size="sm" className="w-full">
-                      <XCircle className="h-4 w-4 mr-2" /> Cancel Reservation
+                      <XCircle className="h-4 w-4 mr-2" /> Cancelar Reserva
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
                     <AlertDialogHeader>
-                      <AlertDialogTitle>Cancel Reservation?</AlertDialogTitle>
+                      <AlertDialogTitle>¿Cancelar reserva?</AlertDialogTitle>
                       <AlertDialogDescription>
-                        Are you sure you want to cancel this reservation? This
-                        action cannot be undone.
+                        ¿Estás seguro de que deseas cancelar esta reserva? Esta
+                        acción no se puede deshacer.
                       </AlertDialogDescription>
                     </AlertDialogHeader>
                     <AlertDialogFooter>
-                      <AlertDialogCancel>Keep Reservation</AlertDialogCancel>
+                      <AlertDialogCancel>Mantener reserva</AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() =>
                           handleStatusUpdate(reservation.id, "CANCELLED")
                         }
                       >
-                        Cancel Reservation
+                        Cancelar Reserva
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
@@ -243,7 +245,7 @@ export default function AdminReservationList({
                   ) : (
                     <CheckCircle className="h-4 w-4 mr-2" />
                   )}
-                  Restore & Confirm
+                  Restaurar y Confirmar
                 </Button>
               )}
             </CardFooter>

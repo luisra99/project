@@ -21,7 +21,7 @@ export default function AdminPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    // Check if user is already logged in
+    // Verificar si el usuario ya está autenticado
     const user = getCurrentUser();
     if (user && user.role === "admin") {
       setIsAuthenticated(true);
@@ -32,7 +32,7 @@ export default function AdminPage() {
     e.preventDefault();
     setIsLoading(true);
 
-    // In a real app, this would make an API call to authenticate
+    // En una aplicación real, esto haría una llamada API para autenticar
     const result = login(email, password);
 
     setTimeout(() => {
@@ -41,17 +41,17 @@ export default function AdminPage() {
       if (result.success && isAdmin()) {
         setIsAuthenticated(true);
         toast({
-          title: "Logged in successfully",
-          description: "Welcome to the admin dashboard",
+          title: "Inicio de sesión exitoso",
+          description: "Bienvenido al panel de administración",
         });
       } else {
         toast({
           variant: "destructive",
-          title: "Login failed",
-          description: "Invalid credentials. Try again.",
+          title: "Error de inicio de sesión",
+          description: "Credenciales inválidas. Intente nuevamente.",
         });
       }
-    }, 1000); // Simulated delay
+    }, 1000); // Retraso simulado
   };
 
   if (!isAuthenticated) {
@@ -60,24 +60,24 @@ export default function AdminPage() {
         <Card>
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl font-bold text-center">
-              Admin Login
+              Acceso de Administrador
             </CardTitle>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email">Correo electrónico</Label>
                 <Input
                   id="email"
                   type="email"
-                  placeholder="admin@restaurant.com"
+                  placeholder="admin@restaurante.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">Contraseña</Label>
                 <Input
                   id="password"
                   type="password"
@@ -87,15 +87,15 @@ export default function AdminPage() {
                 />
               </div>
               <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Logging in..." : "Login"}
+                {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
               </Button>
 
               <div className="bg-amber-100 p-3 rounded-md text-amber-800 text-sm flex items-start">
                 <AlertCircle className="h-5 w-5 mr-2 mt-0.5 flex-shrink-0" />
                 <div>
-                  <p className="font-semibold">Demo Credentials</p>
-                  <p>Email: admin@restaurant.com</p>
-                  <p>Password: any password will work</p>
+                  <p className="font-semibold">Credenciales de demostración</p>
+                  <p>Correo: admin@restaurante.com</p>
+                  <p>Contraseña: cualquier contraseña funcionará</p>
                 </div>
               </div>
             </form>
@@ -107,56 +107,60 @@ export default function AdminPage() {
 
   return (
     <div className="container mx-auto py-10 px-4">
-      <h1 className="text-3xl font-bold mb-2">Admin Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-2">Panel de Administración</h1>
       <p className="text-muted-foreground mb-8">
-        Manage reservation requests and availability
+        Gestione solicitudes de reservas y disponibilidad
       </p>
 
       <div className="grid gap-6 md:grid-cols-3 mb-8">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">
-              Total Reservations
+              Reservas Totales
             </CardTitle>
             <Calendar className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">+2 from last week</p>
+            <p className="text-xs text-muted-foreground">
+              +2 desde la semana pasada
+            </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium">
-              Pending Requests
+              Solicitudes Pendientes
             </CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">2</div>
             <p className="text-xs text-muted-foreground">
-              Needs your attention
+              Requieren su atención
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium">Guests Today</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Comensales Hoy
+            </CardTitle>
             <User className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">4</div>
-            <p className="text-xs text-muted-foreground">1 table of 4</p>
+            <p className="text-xs text-muted-foreground">1 mesa de 4</p>
           </CardContent>
         </Card>
       </div>
 
       <Tabs defaultValue="PENDING" className="w-full">
         <TabsList className="mb-6">
-          <TabsTrigger value="PENDING">Pending</TabsTrigger>
-          <TabsTrigger value="CONFIRMED">Confirmed</TabsTrigger>
-          <TabsTrigger value="REJECTED">Rejected</TabsTrigger>
-          <TabsTrigger value="all">All Reservations</TabsTrigger>
+          <TabsTrigger value="PENDING">Pendientes</TabsTrigger>
+          <TabsTrigger value="CONFIRMED">Confirmadas</TabsTrigger>
+          <TabsTrigger value="REJECTED">Rechazadas</TabsTrigger>
+          <TabsTrigger value="all">Todas las Reservas</TabsTrigger>
         </TabsList>
 
         <TabsContent value="PENDING">

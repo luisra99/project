@@ -57,7 +57,7 @@ export const getAvailabilityForDate = async (
 // Format date for display (e.g., "Monday, January 1, 2025")
 export const formatDisplayDate = (dateString: string): string => {
   const date = new Date(dateString);
-  return date.toLocaleDateString("en-US", {
+  return date.toLocaleDateString("es-ES", {
     weekday: "long",
     year: "numeric",
     month: "long",

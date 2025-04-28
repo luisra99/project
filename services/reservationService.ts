@@ -70,7 +70,7 @@ export const isTimeSlotAvailable = async (
   );
   if (!res.ok) throw new Error("Error al verificar la disponibilidad.");
   const data = await res.json();
-  console.log("AVAILABLE", data);
+  console.log("DISPONIBLE", data);
   return data.available;
 };
 
@@ -85,12 +85,15 @@ export async function getReservationsByDate(
     );
 
     if (!res.ok) {
-      throw new Error(`Error fetching reservations: ${res.statusText}`);
+      throw new Error(`Error al obtener las reservas: ${res.statusText}`);
     }
 
     return await res.json();
   } catch (error) {
-    console.error(`Error fetching reservations for date ${date}:`, error);
-    throw new Error("Failed to fetch reservations by date");
+    console.error(
+      `Error al obtener las reservas para la fecha ${date}:`,
+      error
+    );
+    throw new Error("No se pudieron obtener las reservas por fecha");
   }
 }

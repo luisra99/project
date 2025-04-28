@@ -4,50 +4,60 @@ import { Separator } from "@/components/ui/separator";
 export default function MenuPage() {
   return (
     <div className="container mx-auto py-10 px-4 max-w-4xl">
-      <h1 className="text-4xl font-bold mb-2 text-center">Our Menu</h1>
+      <h1 className="text-4xl font-bold mb-2 text-center">Nuestro Menú</h1>
       <p className="text-muted-foreground text-center mb-10">
-        Crafted with passion and the finest ingredients
+        Elaborado con pasión y los mejores ingredientes
       </p>
-      
-      {/* Starters */}
+
+      {/* Entradas */}
       <section className="mb-10">
         <div className="flex items-center justify-center mb-6">
           <div className="h-px bg-muted flex-grow" />
-          <h2 className="text-2xl font-semibold px-4">Starters</h2>
+          <h2 className="text-2xl font-semibold px-4">Entradas</h2>
           <div className="h-px bg-muted flex-grow" />
         </div>
-        
+
         <div className="grid gap-4">
           <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium text-lg">Roasted Beet Carpaccio</h3>
-                  <p className="text-muted-foreground">Goat cheese, arugula, pistachios, balsamic reduction</p>
+                  <h3 className="font-medium text-lg">
+                    Carpaccio de Remolacha Asada
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Queso de cabra, rúcula, pistachos, reducción de balsámico
+                  </p>
                 </div>
                 <span className="font-medium">$14</span>
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium text-lg">Seared Scallops</h3>
-                  <p className="text-muted-foreground">Cauliflower purée, bacon, truffle oil</p>
+                  <h3 className="font-medium text-lg">Vieiras Selladas</h3>
+                  <p className="text-muted-foreground">
+                    Puré de coliflor, tocino, aceite de trufa
+                  </p>
                 </div>
                 <span className="font-medium">$18</span>
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium text-lg">Wild Mushroom Risotto</h3>
-                  <p className="text-muted-foreground">Porcini, shiitake, parmesan, herbs</p>
+                  <h3 className="font-medium text-lg">
+                    Risotto de Hongos Silvestres
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Porcini, shiitake, parmesano, hierbas
+                  </p>
                 </div>
                 <span className="font-medium">$16</span>
               </div>
@@ -55,58 +65,71 @@ export default function MenuPage() {
           </Card>
         </div>
       </section>
-      
-      {/* Main Courses */}
+
+      {/* Platos Principales */}
       <section className="mb-10">
         <div className="flex items-center justify-center mb-6">
           <div className="h-px bg-muted flex-grow" />
-          <h2 className="text-2xl font-semibold px-4">Main Courses</h2>
+          <h2 className="text-2xl font-semibold px-4">Platos Principales</h2>
           <div className="h-px bg-muted flex-grow" />
         </div>
-        
+
         <div className="grid gap-4">
           <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium text-lg">Filet Mignon</h3>
-                  <p className="text-muted-foreground">Truffle mashed potatoes, seasonal vegetables, red wine reduction</p>
+                  <h3 className="font-medium text-lg">Filete Mignon</h3>
+                  <p className="text-muted-foreground">
+                    Puré de papas con trufa, vegetales de temporada, reducción
+                    de vino tinto
+                  </p>
                 </div>
                 <span className="font-medium">$38</span>
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium text-lg">Herb-Crusted Rack of Lamb</h3>
-                  <p className="text-muted-foreground">Rosemary polenta, glazed carrots, mint jus</p>
+                  <h3 className="font-medium text-lg">
+                    Costillar de Cordero con Hierbas
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Polenta con romero, zanahorias glaseadas, jugo de menta
+                  </p>
                 </div>
                 <span className="font-medium">$42</span>
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium text-lg">Pan-Seared Sea Bass</h3>
-                  <p className="text-muted-foreground">Saffron risotto, asparagus, lemon beurre blanc</p>
+                  <h3 className="font-medium text-lg">Lubina Sellada</h3>
+                  <p className="text-muted-foreground">
+                    Risotto de azafrán, espárragos, beurre blanc de limón
+                  </p>
                 </div>
                 <span className="font-medium">$36</span>
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium text-lg">Wild Mushroom Linguine</h3>
-                  <p className="text-muted-foreground">Truffle cream, parmesan, fresh herbs</p>
+                  <h3 className="font-medium text-lg">
+                    Linguini de Hongos Silvestres
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Crema de trufa, parmesano, hierbas frescas
+                  </p>
                 </div>
                 <span className="font-medium">$28</span>
               </div>
@@ -114,46 +137,54 @@ export default function MenuPage() {
           </Card>
         </div>
       </section>
-      
-      {/* Desserts */}
+
+      {/* Postres */}
       <section>
         <div className="flex items-center justify-center mb-6">
           <div className="h-px bg-muted flex-grow" />
-          <h2 className="text-2xl font-semibold px-4">Desserts</h2>
+          <h2 className="text-2xl font-semibold px-4">Postres</h2>
           <div className="h-px bg-muted flex-grow" />
         </div>
-        
+
         <div className="grid gap-4">
           <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium text-lg">Dark Chocolate Soufflé</h3>
-                  <p className="text-muted-foreground">Vanilla bean ice cream, salted caramel</p>
+                  <h3 className="font-medium text-lg">
+                    Soufflé de Chocolate Oscuro
+                  </h3>
+                  <p className="text-muted-foreground">
+                    Helado de vainilla, caramelo salado
+                  </p>
                 </div>
                 <span className="font-medium">$12</span>
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium text-lg">Lemon Tart</h3>
-                  <p className="text-muted-foreground">Italian meringue, fresh berries</p>
+                  <h3 className="font-medium text-lg">Tarta de Limón</h3>
+                  <p className="text-muted-foreground">
+                    Merengue italiano, frutos rojos frescos
+                  </p>
                 </div>
                 <span className="font-medium">$10</span>
               </div>
             </CardContent>
           </Card>
-          
+
           <Card>
             <CardContent className="p-6">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-medium text-lg">Tiramisu</h3>
-                  <p className="text-muted-foreground">Espresso, mascarpone, cocoa</p>
+                  <h3 className="font-medium text-lg">Tiramisú</h3>
+                  <p className="text-muted-foreground">
+                    Café expreso, mascarpone, cacao
+                  </p>
                 </div>
                 <span className="font-medium">$11</span>
               </div>
@@ -161,12 +192,14 @@ export default function MenuPage() {
           </Card>
         </div>
       </section>
-      
+
       <div className="mt-12">
         <Separator className="mb-6" />
         <p className="text-center text-sm text-muted-foreground italic">
-          Our menu changes seasonally to incorporate the freshest ingredients. <br />
-          Please inform your server of any allergies or dietary restrictions.
+          Nuestro menú cambia según la temporada para incorporar los
+          ingredientes más frescos. <br />
+          Por favor informe a su mesero sobre cualquier alergia o restricción
+          dietética.
         </p>
       </div>
     </div>

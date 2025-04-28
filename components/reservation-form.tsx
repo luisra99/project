@@ -23,10 +23,13 @@ import { useReservations } from "./reservation-provider";
 import { formatDisplayDate, formatDisplayTime } from "@/lib/utils";
 
 const formSchema = z.object({
-  guestName: z.string().min(2, "Full name is required"),
-  guestEmail: z.string().email("A valid email is required"),
-  guestPhone: z.string().min(10, "A valid phone number is required"),
-  partySize: z.coerce.number().min(1).max(20, "Maximum party size is 20"),
+  guestName: z.string().min(2, "El nombre completo es obligatorio"),
+  guestEmail: z.string().email("Se requiere un correo electrónico válido"),
+  guestPhone: z.string().min(10, "Se requiere un número de teléfono válido"),
+  partySize: z.coerce
+    .number()
+    .min(1)
+    .max(20, "El tamaño máximo del grupo es 20"),
   specialRequests: z.string().optional(),
 });
 
@@ -62,30 +65,30 @@ export default function ReservationForm({
     setIsSubmitting(true);
 
     try {
-      // Submit reservation to our mock database
+      // Enviar la reserva a nuestra base de datos simulada
       await addReservation({
         ...data,
         date: selectedDate,
         time: selectedTime,
       });
 
-      // Show success state
+      // Mostrar estado de éxito
       setIsSuccess(true);
 
       toast({
-        title: "Reservation Submitted!",
+        title: "¡Reserva enviada!",
         description:
-          "We have received your reservation request and will confirm it shortly.",
+          "Hemos recibido tu solicitud de reserva y la confirmaremos en breve.",
       });
 
-      // Reset form
+      // Reiniciar formulario
       form.reset();
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Something went wrong",
+        title: "Algo salió mal",
         description:
-          "There was an error submitting your reservation. Please try again.",
+          "Hubo un error al enviar tu reserva. Por favor, inténtalo de nuevo.",
       });
     } finally {
       setIsSubmitting(false);
@@ -95,25 +98,25 @@ export default function ReservationForm({
   if (isSuccess) {
     return (
       <div className="text-center py-10 space-y-4">
-        <h3 className="text-2xl font-bold text-primary">Thank You!</h3>
-        <p className="text-lg">Your reservation request has been submitted.</p>
+        <h3 className="text-2xl font-bold text-primary">¡Gracias!</h3>
+        <p className="text-lg">Tu solicitud de reserva ha sido enviada.</p>
         <p className="text-muted-foreground">
-          We will review your request and send a confirmation to your email
-          shortly.
+          Revisaremos tu solicitud y te enviaremos una confirmación por correo
+          electrónico en breve.
         </p>
         <div className="bg-muted p-4 rounded-lg inline-block mx-auto mt-4">
           <p>
-            <strong>Date:</strong> {formatDisplayDate(selectedDate)}
+            <strong>Fecha:</strong> {formatDisplayDate(selectedDate)}
           </p>
           <p>
-            <strong>Time:</strong> {formatDisplayTime(selectedTime)}
+            <strong>Hora:</strong> {formatDisplayTime(selectedTime)}
           </p>
           <p>
-            <strong>Party Size:</strong> {form.getValues().partySize}
+            <strong>Número de personas:</strong> {form.getValues().partySize}
           </p>
         </div>
         <div className="pt-6">
-          <Button onClick={() => router.push("/")}>Return to Home</Button>
+          <Button onClick={() => router.push("/")}>Volver al inicio</Button>
         </div>
       </div>
     );
@@ -122,9 +125,10 @@ export default function ReservationForm({
   return (
     <div className="space-y-6">
       <div>
-        <h3 className="text-lg font-medium">Your Reservation Details</h3>
+        <h3 className="text-lg font-medium">Detalles de tu reserva</h3>
         <p className="text-muted-foreground">
-          {formatDisplayDate(selectedDate)} at {formatDisplayTime(selectedTime)}
+          {formatDisplayDate(selectedDate)} a las{" "}
+          {formatDisplayTime(selectedTime)}
         </p>
       </div>
 
@@ -137,9 +141,9 @@ export default function ReservationForm({
             name="guestName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Full Name</FormLabel>
+                <FormLabel>Nombre completo</FormLabel>
                 <FormControl>
-                  <Input placeholder="John Smith" {...field} />
+                  <Input placeholder="Juan Pérez" {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -152,13 +156,9 @@ export default function ReservationForm({
               name="guestEmail"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Correo electrónico</FormLabel>
                   <FormControl>
-                    <Input
-                      type="email"
-                      placeholder="you@example.com"
-                      {...field}
-                    />
+                    <Input type="email" placeholder="tu@email.com" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -170,7 +170,7 @@ export default function ReservationForm({
               name="guestPhone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone Number</FormLabel>
+                  <FormLabel>Teléfono</FormLabel>
                   <FormControl>
                     <Input placeholder="(555) 123-4567" {...field} />
                   </FormControl>
@@ -185,12 +185,13 @@ export default function ReservationForm({
             name="partySize"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Party Size</FormLabel>
+                <FormLabel>Número de personas</FormLabel>
                 <FormControl>
                   <Input type="number" min="1" max="20" {...field} />
                 </FormControl>
                 <FormDescription>
-                  For parties larger than 8, please call us directly.
+                  Para grupos mayores de 8 personas, por favor llámanos
+                  directamente.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -202,15 +203,15 @@ export default function ReservationForm({
             name="specialRequests"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Special Requests</FormLabel>
+                <FormLabel>Peticiones especiales</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Any dietary restrictions, celebrations, or seating preferences?"
+                    placeholder="¿Alguna restricción alimentaria, celebración o preferencia de asientos?"
                     {...field}
                   />
                 </FormControl>
                 <FormDescription>
-                  We'll do our best to accommodate your requests.
+                  Haremos lo posible por atender tus peticiones.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -224,7 +225,7 @@ export default function ReservationForm({
               className="w-full"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Submitting..." : "Complete Reservation"}
+              {isSubmitting ? "Enviando..." : "Completar reserva"}
             </Button>
           </div>
         </form>

@@ -46,12 +46,12 @@ export default function CalendarView({
       <div>
         <h3 className="text-lg font-medium mb-3 flex items-center">
           <CalendarIcon className="mr-2 h-5 w-5" />
-          Select a Date
+          Seleccionar fecha
         </h3>
         <ScrollArea className="w-full whitespace-nowrap rounded-md border">
           <div className="flex p-4 gap-2" style={{ justifyContent: "center" }}>
             {availableDates.map((date) => {
-              const formattedDate = new Date(date).toLocaleDateString("en-US", {
+              const formattedDate = new Date(date).toLocaleDateString("es-ES", {
                 weekday: "short",
                 month: "short",
                 day: "numeric",
@@ -81,7 +81,7 @@ export default function CalendarView({
       {selectedDate && dateAvailability && (
         <div className="space-y-3 fade-in">
           <h3 className="text-lg font-medium">
-            Available Times for {formatDisplayDate(selectedDate)}
+            Horarios disponibles para {formatDisplayDate(selectedDate)}
           </h3>
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2 mt-2">
             {dateAvailability.timeSlots.map((slot) => {
@@ -113,7 +113,7 @@ export default function CalendarView({
 
           {!selectedTime && (
             <p className="text-sm text-muted-foreground mt-2">
-              Please select a time slot
+              Por favor selecciona un horario
             </p>
           )}
         </div>
@@ -130,7 +130,7 @@ export default function CalendarView({
                 ?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
             }}
           >
-            Continue to Details
+            Continuar con los detalles
           </Button>
         </div>
       )}

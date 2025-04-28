@@ -27,22 +27,22 @@ export default function ReservationsPage() {
   return (
     <div className="container mx-auto py-10 px-4 max-w-5xl">
       <h1 className="text-4xl font-bold mb-2 text-center">
-        Make a Reservation
+        Haz una reservación
       </h1>
       <p className="text-muted-foreground text-center mb-10">
-        Select your preferred date and time, then fill out your details to book
-        your table.
+        Selecciona tu fecha y hora preferidas, luego completa tus detalles para
+        reservar tu mesa.
       </p>
 
       <Tabs defaultValue="calendar" className="w-full">
         <TabsList className="grid grid-cols-2 mb-8">
           <TabsTrigger value="calendar">
             <CalendarIcon className="mr-2 h-4 w-4" />
-            Select Date
+            Seleccionar fecha
           </TabsTrigger>
           <TabsTrigger value="form" disabled={!selectedDate || !selectedTime}>
             <Clock className="mr-2 h-4 w-4" />
-            Your Details
+            Tus detalles
           </TabsTrigger>
         </TabsList>
 
@@ -60,14 +60,14 @@ export default function ReservationsPage() {
           {selectedDate && selectedTime && (
             <div className="text-center">
               <p className="text-lg mb-4">
-                You've selected:{" "}
+                Has seleccionado:{" "}
                 <span className="font-semibold">
-                  {new Date(selectedDate).toLocaleDateString("en-US", {
+                  {new Date(selectedDate).toLocaleDateString("es-ES", {
                     weekday: "long",
                     month: "long",
                     day: "numeric",
                   })}{" "}
-                  at {selectedTime}
+                  a las {selectedTime}
                 </span>
               </p>
             </div>
