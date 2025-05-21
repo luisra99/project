@@ -6,9 +6,13 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Menu, X, UtensilsCrossed } from "lucide-react";
 import { isAdmin } from "@/lib/auth";
+import { useAuth } from "./AuthProvider";
+import { useRouter } from "next/navigation";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { user, setUser } = useAuth();
+  const router = useRouter();
 
   return (
     <header className="sticky top-0 px-5 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -37,23 +41,36 @@ const Header = () => {
           >
             Menú
           </Link>
-          <Link
-            href="/reservations"
-            className="text-sm font-medium transition-colors hover:text-primary"
-          >
-            Reservas
-          </Link>
-          {isAdmin() && (
+          {user?.role == "GEST" && (
+            <Link
+              href="/reservations"
+              className="text-sm font-medium transition-colors hover:text-primary"
+            >
+              Reservas
+            </Link>
+          )}
+          {user?.role == "ADMIN" && (
             <Link
               href="/admin"
               className="text-sm font-medium transition-colors hover:text-primary"
             >
-              Admin
+              Reservas
             </Link>
           )}
-          <Link href="/reservations">
-            <Button>Reservar una mesa</Button>
-          </Link>
+          {user?.id ? (
+            <Button
+              onClick={() => {
+                setUser(null);
+                router.push("/");
+              }}
+            >
+              Cerrar sesión
+            </Button>
+          ) : (
+            <Link href="/admin">
+              <Button>Iniciar sesión</Button>
+            </Link>
+          )}
         </nav>
 
         {/* Navegación móvil */}

@@ -1,7 +1,103 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
+import { useAuth } from "@/components/AuthProvider";
+
+type MenuItem = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+};
 
 export default function MenuPage() {
+  const router = useRouter();
+  const { user, setUser } = useAuth();
+
+  const admin = user?.role === "ADMIN"; // Cambia esto por isAdmin() si lo tienes
+
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+
+  useEffect(() => {
+    fetch("/api/menu")
+      .then((res) => {
+        if (!res.ok) throw new Error("Error en la respuesta");
+        return res.json();
+      })
+      .then((data) => {
+        console.log("Datos recibidos:", data); // Debug
+        setMenuItems(data);
+      })
+      .catch((err) => console.error("Error fetching menu:", err));
+  }, []);
+
+  const grouped = {
+    entradas: menuItems.filter((item) => item.category === "Entradas"),
+    principales: menuItems.filter((item) => item.category === "Principal"),
+    postres: menuItems.filter((item) => item.category === "Postres"),
+    platos: menuItems.filter((item) => item.category === "Platos"),
+    bebidas: menuItems.filter((item) => item.category === "Bebidas"),
+  };
+
+  const renderSection = (title: string, items: MenuItem[]) => (
+    <section className="mb-10">
+      <div className="flex items-center justify-center mb-6">
+        <div className="h-px bg-muted flex-grow" />
+        <h2 className="text-2xl font-semibold px-4">{title}</h2>
+        <div className="h-px bg-muted flex-grow" />
+      </div>
+
+      <div className="grid gap-4">
+        {items.map((offer) => (
+          <Card key={offer.id}>
+            <CardContent className="p-6">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h3 className="font-medium text-lg">{offer.name}</h3>
+                  <p className="text-muted-foreground">{offer.description}</p>
+                </div>
+                <span className="font-medium">${offer.price}</span>
+              </div>
+              {admin && (
+                <div className="flex gap-2 justify-end mt-4">
+                  <button
+                    onClick={() => router.push(`/menu/edit/${offer.id}`)}
+                    className="text-blue-600 hover:underline"
+                  >
+                    Editar
+                  </button>
+                  <button
+                    onClick={() => {
+                      // Podés reemplazar esto con tu DeleteButton o lógica real
+                      if (confirm("¿Eliminar esta oferta?")) {
+                        fetch(`/api/menu/${offer.id}`, {
+                          method: "DELETE",
+                        }).then(() =>
+                          setMenuItems((prev) =>
+                            prev.filter((i) => i.id !== offer.id)
+                          )
+                        );
+                      }
+                    }}
+                    className="text-red-600 hover:underline"
+                  >
+                    Eliminar
+                  </button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </section>
+  );
+
   return (
     <div className="container mx-auto py-10 px-4 max-w-4xl">
       <h1 className="text-4xl font-bold mb-2 text-center">Nuestro Menú</h1>
@@ -9,189 +105,18 @@ export default function MenuPage() {
         Elaborado con pasión y los mejores ingredientes
       </p>
 
-      {/* Entradas */}
-      <section className="mb-10">
-        <div className="flex items-center justify-center mb-6">
-          <div className="h-px bg-muted flex-grow" />
-          <h2 className="text-2xl font-semibold px-4">Entradas</h2>
-          <div className="h-px bg-muted flex-grow" />
+      {admin && (
+        <div className="flex justify-center gap-4 mb-8">
+          <Button variant="outline" onClick={() => router.push("/menu/create")}>
+            Crear Oferta
+          </Button>
         </div>
+      )}
 
-        <div className="grid gap-4">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium text-lg">
-                    Carpaccio de Remolacha Asada
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Queso de cabra, rúcula, pistachos, reducción de balsámico
-                  </p>
-                </div>
-                <span className="font-medium">$14</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium text-lg">Vieiras Selladas</h3>
-                  <p className="text-muted-foreground">
-                    Puré de coliflor, tocino, aceite de trufa
-                  </p>
-                </div>
-                <span className="font-medium">$18</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium text-lg">
-                    Risotto de Hongos Silvestres
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Porcini, shiitake, parmesano, hierbas
-                  </p>
-                </div>
-                <span className="font-medium">$16</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Platos Principales */}
-      <section className="mb-10">
-        <div className="flex items-center justify-center mb-6">
-          <div className="h-px bg-muted flex-grow" />
-          <h2 className="text-2xl font-semibold px-4">Platos Principales</h2>
-          <div className="h-px bg-muted flex-grow" />
-        </div>
-
-        <div className="grid gap-4">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium text-lg">Filete Mignon</h3>
-                  <p className="text-muted-foreground">
-                    Puré de papas con trufa, vegetales de temporada, reducción
-                    de vino tinto
-                  </p>
-                </div>
-                <span className="font-medium">$38</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium text-lg">
-                    Costillar de Cordero con Hierbas
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Polenta con romero, zanahorias glaseadas, jugo de menta
-                  </p>
-                </div>
-                <span className="font-medium">$42</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium text-lg">Lubina Sellada</h3>
-                  <p className="text-muted-foreground">
-                    Risotto de azafrán, espárragos, beurre blanc de limón
-                  </p>
-                </div>
-                <span className="font-medium">$36</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium text-lg">
-                    Linguini de Hongos Silvestres
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Crema de trufa, parmesano, hierbas frescas
-                  </p>
-                </div>
-                <span className="font-medium">$28</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Postres */}
-      <section>
-        <div className="flex items-center justify-center mb-6">
-          <div className="h-px bg-muted flex-grow" />
-          <h2 className="text-2xl font-semibold px-4">Postres</h2>
-          <div className="h-px bg-muted flex-grow" />
-        </div>
-
-        <div className="grid gap-4">
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium text-lg">
-                    Soufflé de Chocolate Oscuro
-                  </h3>
-                  <p className="text-muted-foreground">
-                    Helado de vainilla, caramelo salado
-                  </p>
-                </div>
-                <span className="font-medium">$12</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium text-lg">Tarta de Limón</h3>
-                  <p className="text-muted-foreground">
-                    Merengue italiano, frutos rojos frescos
-                  </p>
-                </div>
-                <span className="font-medium">$10</span>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardContent className="p-6">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h3 className="font-medium text-lg">Tiramisú</h3>
-                  <p className="text-muted-foreground">
-                    Café expreso, mascarpone, cacao
-                  </p>
-                </div>
-                <span className="font-medium">$11</span>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
+      {renderSection("Entradas", grouped.entradas)}
+      {renderSection("Platos Principales", grouped.platos)}
+      {renderSection("Postres", grouped.postres)}
+      {renderSection("Bebidas", grouped.bebidas)}
 
       <div className="mt-12">
         <Separator className="mb-6" />

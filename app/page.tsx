@@ -15,12 +15,12 @@ export default function Home() {
             Reserva tu mesa hoy y disfruta de excelencia culinaria
           </p>
           <div className="pt-8">
-            <Link href="/reservations">
+            <Link href="/admin">
               <Button
                 size="lg"
                 className="bg-primary hover:bg-primary/90 text-white"
               >
-                Hacer una reserva
+                Iniciar sesión para hacer una reserva
               </Button>
             </Link>
           </div>

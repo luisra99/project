@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { ReservationProvider } from "@/components/reservation-provider";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { AuthProvider } from "@/components/AuthProvider";
 
 export const metadata: Metadata = {
   title: "Gourmet Table - Restaurant Reservations",
@@ -24,12 +25,14 @@ export default function RootLayout({
           defaultTheme="light"
           enableSystem={false}
         >
-          <ReservationProvider>
-            <Header />
-            <main className="flex-grow">{children}</main>
-            <Footer />
-            <Toaster />
-          </ReservationProvider>
+          <AuthProvider>
+            <ReservationProvider>
+              <Header />
+              <main className="flex-grow">{children}</main>
+              <Footer />
+              <Toaster />
+            </ReservationProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
